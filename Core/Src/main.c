@@ -53,7 +53,12 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 // DMA buffer for TIM1 CH1
-uint32_t sine[30] = {0, };
+uint16_t  pwmlist1[] = {
+		1000,1017,1035,1052,1070,1087,1105,1122,1139,1156,1174,1191,1208,1225,1242,1259,1276,1292,1309,1326,1342,1358,1375,1391,1407,1423,1438,1454,1469,1485,1500,1515,1530,1545,1559,1574,1588,1602,1616,1629,1643,1656,1669,1682,1695,1707,1719,1731,1743,1755,1766,1777,1788,1799,1809,1819,1829,1839,1848,1857,1866,1875,1883,1891,1899,1906,1914,1921,1927,1934,1940,1946,1951,1956,1961,1966,1970,1974,1978,1982,1985,1988,1990,1993,1995,1996,1998,1999,1999,2000,2000,2000,1999,1999,1998,1996,1995,1993,1990,1988,1985,1982,1978,1974,1970,1966,1961,1956,1951,1946,1940,1934,1927,1921,1914,1906,1899,1891,1883,1875,1866,1857,1848,1839,1829,1819,1809,1799,1788,1777,1766,1755,1743,1731,1719,1707,1695,1682,1669,1656,1643,1629,1616,1602,1588,1574,1559,1545,1530,1515,1500,1485,1469,1454,1438,1423,1407,1391,1375,1358,1342,1326,1309,1292,1276,1259,1242,1225,1208,1191,1174,1156,1139,1122,1105,1087,1070,1052,1035,1017,1000,983,965,948,930,913,895,878,861,844,826,809,792,775,758,741,724,708,691,674,658,642,625,609,593,577,562,546,531,515,500,485,470,455,441,426,412,398,384,371,357,344,331,318,305,293,281,269,257,245,234,223,212,201,191,181,171,161,152,143,134,125,117,109,101,94,86,79,73,66,60,54,49,44,39,34,30,26,22,18,15,12,10,7,5,4,2,1,1,0,0,0,1,1,2,4,5,7,10,12,15,18,22,26,30,34,39,44,49,54,60,66,73,79,86,94,101,109,117,125,134,143,152,161,171,181,191,201,212,223,234,245,257,269,281,293,305,318,331,344,357,371,384,398,412,426,441,455,470,485,500,515,531,546,562,577,593,609,625,642,658,674,691,708,724,741,758,775,792,809,826,844,861,878,895,913,930,948,965,983,
+};
+uint16_t  pwmlist2[] = {
+  900, 800, 700,
+};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,7 +75,12 @@ static void MX_TIM3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+//htim1
+void set_prescalar(int freq){
+	//170MHz
 
+	__HAL_TIM_SET_PRESCALER(&htim1, 1000000/180*16/freq);
+}
 /* USER CODE END 0 */
 
 /**
@@ -107,14 +117,19 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_TIM_PWM_Start_DMA(&htim1,TIM_CHANNEL_1,(uint32_t*)pwmlist1, sizeof (pwmlist1) / sizeof (uint16_t));
+  htim1.State = HAL_TIM_STATE_READY;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_DMA_Start(htim1,);
+	  for(int i = 4; i<2000;i++){
+		  set_prescalar(i);
+		  HAL_Delay(100);
+	  }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -133,7 +148,7 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -141,13 +156,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
-  RCC_OscInitStruct.PLL.PLLN = 85;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -157,12 +166,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }
@@ -181,7 +190,6 @@ static void MX_TIM1_Init(void)
   /* USER CODE END TIM1_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_SlaveConfigTypeDef sSlaveConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
   TIM_OC_InitTypeDef sConfigOC = {0};
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
@@ -190,31 +198,22 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED1;
-  htim1.Init.Period = 65535;
+  htim1.Init.Prescaler = 10;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 2000;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
   }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_ETRMODE2;
-  sClockSourceConfig.ClockPolarity = TIM_CLOCKPOLARITY_NONINVERTED;
-  sClockSourceConfig.ClockPrescaler = TIM_CLOCKPRESCALER_DIV1;
-  sClockSourceConfig.ClockFilter = 0;
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
   if (HAL_TIM_PWM_Init(&htim1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sSlaveConfig.SlaveMode = TIM_SLAVEMODE_DISABLE;
-  sSlaveConfig.InputTrigger = TIM_TS_ITR0;
-  if (HAL_TIM_SlaveConfigSynchro(&htim1, &sSlaveConfig) != HAL_OK)
   {
     Error_Handler();
   }
