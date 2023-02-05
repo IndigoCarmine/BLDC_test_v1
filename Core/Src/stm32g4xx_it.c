@@ -57,10 +57,6 @@
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_tim1_ch1;
 extern DMA_HandleTypeDef hdma_tim1_ch2;
-extern DMA_HandleTypeDef hdma_tim2_ch1;
-extern DMA_HandleTypeDef hdma_tim2_ch2;
-extern DMA_HandleTypeDef hdma_tim3_ch1;
-extern DMA_HandleTypeDef hdma_tim3_ch2;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -232,62 +228,6 @@ void DMA1_Channel2_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles DMA1 channel3 global interrupt.
-  */
-void DMA1_Channel3_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_tim2_ch1);
-  /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel3_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel4 global interrupt.
-  */
-void DMA1_Channel4_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_tim2_ch2);
-  /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel4_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel5 global interrupt.
-  */
-void DMA1_Channel5_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel5_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_tim3_ch1);
-  /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel5_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel6 global interrupt.
-  */
-void DMA1_Channel6_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel6_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel6_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_tim3_ch2);
-  /* USER CODE BEGIN DMA1_Channel6_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel6_IRQn 1 */
-}
-
-/**
   * @brief This function handles DMAMUX overrun interrupt.
   */
 void DMAMUX_OVR_IRQHandler(void)
@@ -299,14 +239,6 @@ void DMAMUX_OVR_IRQHandler(void)
   HAL_DMAEx_MUX_IRQHandler(&hdma_tim1_ch1);
   // Handle DMA1_Channel2
   HAL_DMAEx_MUX_IRQHandler(&hdma_tim1_ch2);
-  // Handle DMA1_Channel3
-  HAL_DMAEx_MUX_IRQHandler(&hdma_tim2_ch1);
-  // Handle DMA1_Channel4
-  HAL_DMAEx_MUX_IRQHandler(&hdma_tim2_ch2);
-  // Handle DMA1_Channel5
-  HAL_DMAEx_MUX_IRQHandler(&hdma_tim3_ch1);
-  // Handle DMA1_Channel6
-  HAL_DMAEx_MUX_IRQHandler(&hdma_tim3_ch2);
   /* USER CODE BEGIN DMAMUX_OVR_IRQn 1 */
 
   /* USER CODE END DMAMUX_OVR_IRQn 1 */
