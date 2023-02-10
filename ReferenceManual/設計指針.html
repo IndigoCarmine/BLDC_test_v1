@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" }},
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+        },
+        "HTML-CSS": { matchFontHeight: false },
+        displayAlign: "left",
+        displayIndent: "2em"
+    });
+    </script>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="jquery.toc.js"></script>
+    <script>
+        $(function () {
+            $("body").toc( {startLevel: 'h1'});
+        });
+    </script>
+    <link rel="stylesheet" href="src/control.css">
+    <title>設計指針</title>
+</head>
+<body>
+
+
+<!-- TODO: CSSが書ける人がいれば、書いてください。 -->
+<!-- 私はセンスがなさすぎてどうにもできない。 -->
+
+<h1>目次</h1>
+<div id="toc"></div>
+
+<h1>このファイルについて</h1>
+
+<p>
+    このファイルは、BLDCの仕様を記述するために作成されたものである。
+    <br>
+    変更する可能性があり、完成版は別のリポジトリに作成する予定となっている。
+</p>
+
+<h1>設計指針</h1>
+<p>
+    設計指針は、以下の通りである。
+
+    <li>BLDC向けの正弦波三相交流をPWMによって出力する。</li>
+    <li>ホール素子、シャント抵抗、リミットスイッチによる入力を受け付けるが、それぞれなくても動作する。</li>
+    <li>USBとCANによる外部入力を可能とする。</li>
+    <li>回転角、角速度、電流による制御を可能とする。</li>
+
+    各機能の詳細は、後述する。
+</p>
+
+<h1>制御</h1>
+<p>
+    制御.drawioによって、制御の詳細が記述されている。
+</p>
+<table>
+    <thead>
+        <tr>
+            <th width="150">制限</th>
+            <th>回転角制御</th>
+            <th>角速度制御</th>
+            <th>角速度制御(同値関係)</th>
+            <th>電流制御</th>     
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>電流制限</td>
+            <td>影響あり</td>
+            <td>影響あり</td>
+            <td>影響あり</td>
+            <td>影響あり</td>
+        </tr>
+        <tr>
+            <td>角速度制限</td>
+            <td>影響あり</td>
+            <td>影響なし</td>
+            <td>影響なし</td>
+            <td>影響なし</td>
+        </tr>
+        <tr>
+            <td>回転角制限</td>
+            <td>影響なし</td>
+            <td>影響なし</td>
+            <td>影響なし（変更可能）</td>
+            <td>影響なし</td>
+        </tr>
+
+    </tbody>
+</table>
+    
+<h2>〇〇制限</h2>
+<p>
+    〇〇制限は、〇〇の最大値を設定することで実現する。
+    <br>
+    infに設定することで制限を解除することにする。
+    ただし、回転角制限を除き、解除を推奨することはできない。
+</p>
+
+<h2>回転角制御</h2>
+<p>
+    回転角制御は、回転角を設定することで実現する。
+</body> 
+
+
+</html>
