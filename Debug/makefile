@@ -9,7 +9,6 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include Drivers/STM32G4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
@@ -75,8 +74,8 @@ all: main-build
 main-build: BLDC_test_v1.elf secondary-outputs
 
 # Tool invocations
-BLDC_test_v1.elf BLDC_test_v1.map: $(OBJS) $(USER_OBJS) C:\Users\taman\STM32CubeIDE\workspace_1.11.0\BLDC_test_v1\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "BLDC_test_v1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\taman\STM32CubeIDE\workspace_1.11.0\BLDC_test_v1\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BLDC_test_v1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+BLDC_test_v1.elf BLDC_test_v1.map: $(OBJS) $(USER_OBJS) C:\Users\taman\repo\BLDC_test_v1\STM32G431KBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "BLDC_test_v1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\taman\repo\BLDC_test_v1\STM32G431KBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BLDC_test_v1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

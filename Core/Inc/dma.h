@@ -50,13 +50,50 @@ static void DMA_SetConfig(DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t
 
 
 
-//強制的にPWMのDMAを利用し、さらに強制的にメモリーのポインタを変更しています。(現状はChannel1用です。)
-void PWM_DMA_Start(TIM_HandleTypeDef *htim, uint32_t Channel, uint32_t *pData, uint16_t Length){
-	__HAL_LOCK(htim->hdma[TIM_DMA_ID_CC1]);
-//    __HAL_DMA_DISABLE(htim->hdma[TIM_DMA_ID_CC1]);
-    DMA_SetConfig(htim->hdma[TIM_DMA_ID_CC1], (uint32_t)pData, (uint32_t)&htim->Instance->CCR1,Length);
-//    __HAL_DMA_ENABLE(htim->hdma[TIM_DMA_ID_CC1]);
-//	__HAL_UNLOCK(htim->hdma[TIM_DMA_ID_CC1]);
+//強制的にPWMのDMAを利用し、さらに強制的にメモリーのポインタを変更しています。
+//HALを利用していないため、他の関数との競合が発生する可能性があります。このコードをリファクタリングする人、ごめんなさい。
+void PWM_DMA_Change(TIM_HandleTypeDef *htim, uint32_t Channel, uint32_t *pData, uint16_t Length){
+	switch(Channel){
+	case TIM_CHANNEL_1:
+    {
+        // __HAL_LOCK(htim->hdma[TIM_DMA_ID_CC1]);
+        // __HAL_DMA_DISABLE(htim->hdma[TIM_DMA_ID_CC1]);
+        DMA_SetConfig(htim->hdma[TIM_DMA_ID_CC1], (uint32_t)pData, (uint32_t)&htim->Instance->CCR1,Length);
+        // __HAL_DMA_ENABLE(htim->hdma[TIM_DMA_ID_CC1]);
+        // __HAL_UNLOCK(htim->hdma[TIM_DMA_ID_CC1]);
+        break;
+      }
+    case TIM_CHANNEL_2:
+      {
+        // __HAL_LOCK(htim->hdma[TIM_DMA_ID_CC2]);
+        // __HAL_DMA_DISABLE(htim->hdma[TIM_DMA_ID_CC2]);
+        DMA_SetConfig(htim->hdma[TIM_DMA_ID_CC2], (uint32_t)pData, (uint32_t)&htim->Instance->CCR2,Length);
+        // __HAL_DMA_ENABLE(htim->hdma[TIM_DMA_ID_CC2]);
+        // __HAL_UNLOCK(htim->hdma[TIM_DMA_ID_CC2]);
+        break;
+      }
+    case TIM_CHANNEL_3:
+      {
+        // __HAL_LOCK(htim->hdma[TIM_DMA_ID_CC3]);
+        // __HAL_DMA_DISABLE(htim->hdma[TIM_DMA_ID_CC3]);
+        DMA_SetConfig(htim->hdma[TIM_DMA_ID_CC3], (uint32_t)pData, (uint32_t)&htim->Instance->CCR3,Length);
+        // __HAL_DMA_ENABLE(htim->hdma[TIM_DMA_ID_CC3]);
+        // __HAL_UNLOCK(htim->hdma[TIM_DMA_ID_CC3]);
+        break;
+      }
+    case TIM_CHANNEL_4:
+      {
+        // __HAL_LOCK(htim->hdma[TIM_DMA_ID_CC4]);
+        // __HAL_DMA_DISABLE(htim->hdma[TIM_DMA_ID_CC4]);
+        DMA_SetConfig(htim->hdma[TIM_DMA_ID_CC4], (uint32_t)pData, (uint32_t)&htim->Instance->CCR4,Length);
+        // __HAL_DMA_ENABLE(htim->hdma[TIM_DMA_ID_CC4]);
+        // __HAL_UNLOCK(htim->hdma[TIM_DMA_ID_CC4]);
+        break;
+      }
+    default:
+      break;
+	}
+
 }
 
 //TODO:HALを利用することなく最適化する必要があるが、応急的に利用します。
