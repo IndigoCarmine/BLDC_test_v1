@@ -42,6 +42,7 @@ text = """
 """
 
 text +="#define TABLE_SIZE "+ str(table_size)+"\r"
+text +="#define WAVE_SIZE "+ str(wave_size)+"\r"
 text +="#define U_POINT "+ str(U_point)+"\r"
 text +="#define V_POINT "+ str(V_point)+"\r"
 text +="#define W_POINT "+ str(W_point)+"\r"

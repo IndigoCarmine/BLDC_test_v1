@@ -72,11 +72,7 @@ static void MX_TIM3_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 //htim1
-void set_prescalar(int freq){
-	//170MHz
 
-	__HAL_TIM_SET_PRESCALER(&htim1, 1000000/180*16/freq);
-}
 /* USER CODE END 0 */
 
 /**
@@ -113,9 +109,8 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_PWM_Start_DMA(&htim1,TIM_CHANNEL_1,(uint32_t*)pwmlist1, sizeof (pwmlist1) / sizeof (uint16_t));
-
   set_prescalar(1000);
+  start_pwm();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -127,7 +122,7 @@ int main(void)
 //		  HAL_Delay(100);
 //	  }
 	  HAL_Delay(1000);
-	  PWM_DMA_Start(&htim1,TIM_CHANNEL_1,(uint32_t*)pwmlist1, sizeof (pwmlist1) / sizeof (uint16_t));
+    set_prescalar(1000);
 //	  HAL_Delay(3000);
 //	  PWM_DMA_Start(&htim1,TIM_CHANNEL_1,(uint32_t*)pwmlist2, sizeof (pwmlist2) / sizeof (uint16_t));
     /* USER CODE END WHILE */
