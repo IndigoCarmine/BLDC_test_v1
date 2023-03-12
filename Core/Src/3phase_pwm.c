@@ -6,7 +6,7 @@
 uint8_t A_table[TABLE_SIZE]={0};
 uint8_t B_table[TABLE_SIZE]={0};
 
-bool using_A_table = false;
+uint8_t using_A_table = 0;
 
 extern TIM_HandleTypeDef htim1;
 
@@ -14,12 +14,12 @@ extern TIM_HandleTypeDef htim1;
 void start_pwm()
 {
     //start PWM
-	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, A_table+U_POINT, WAVE_SIZE);
+	HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*)(A_table+U_POINT), WAVE_SIZE);
     htim1.State = HAL_TIM_STATE_READY;
-    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, A_table+V_POINT, WAVE_SIZE);
+    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t*)(A_table+V_POINT), WAVE_SIZE);
     htim1.State = HAL_TIM_STATE_READY;
-    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3, A_table+W_POINT, WAVE_SIZE);
-    using_A_table = true;
+    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3,(uint32_t*)( A_table+W_POINT), WAVE_SIZE);
+    using_A_table = 1;
 }
 
 void stop_pwm()
@@ -43,13 +43,13 @@ void unsafe_update_table(float scaler, uint8_t* table,TIM_HandleTypeDef* htim,ui
     }
     //change DMA to use new table
     if(direction == 0){
-        PWM_DMA_Change(htim, TIM_CHANNEL_1, table + U_POINT, WAVE_SIZE);
-        PWM_DMA_Change(htim, TIM_CHANNEL_2, table + V_POINT, WAVE_SIZE);
-        PWM_DMA_Change(htim, TIM_CHANNEL_3, table + W_POINT, WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_1, (uint32_t*)(table + U_POINT), WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_2, (uint32_t*)(table + V_POINT), WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_3, (uint32_t*)(table + W_POINT), WAVE_SIZE);
     }else{
-        PWM_DMA_Change(htim, TIM_CHANNEL_1, table + V_POINT, WAVE_SIZE);
-        PWM_DMA_Change(htim, TIM_CHANNEL_2, table + U_POINT, WAVE_SIZE);
-        PWM_DMA_Change(htim, TIM_CHANNEL_3, table + W_POINT, WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_1,(uint32_t*)( table + V_POINT), WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_2, (uint32_t*)(table + U_POINT), WAVE_SIZE);
+        PWM_DMA_Change(htim, TIM_CHANNEL_3, (uint32_t*)(table + W_POINT), WAVE_SIZE);
     }
 }
 
@@ -61,11 +61,11 @@ void update_table(uint8_t scaler,uint8_t direction)
     if(using_A_table){
         //table A is being used, so update table B
         unsafe_update_table(scaler, B_table, &htim1,direction);
-        using_A_table = false;
+        using_A_table = 0;
     }else{
         //table B is being used, so update table A
         unsafe_update_table(scaler, A_table, &htim1,direction);
-        using_A_table = true;
+        using_A_table = 1;
     }
 }
 

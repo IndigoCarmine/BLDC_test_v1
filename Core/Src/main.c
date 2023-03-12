@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "dma.h"
+#include "3phase_pwm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,6 +40,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc2;
+
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
@@ -48,13 +51,6 @@ DMA_HandleTypeDef hdma_tim1_ch2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-// DMA buffer for TIM1 CH1
-uint16_t  pwmlist1[] = {
-		1000,1017,1035,1052,1070,1087,1105,1122,1139,1156,1174,1191,1208,1225,1242,1259,1276,1292,1309,1326,1342,1358,1375,1391,1407,1423,1438,1454,1469,1485,1500,1515,1530,1545,1559,1574,1588,1602,1616,1629,1643,1656,1669,1682,1695,1707,1719,1731,1743,1755,1766,1777,1788,1799,1809,1819,1829,1839,1848,1857,1866,1875,1883,1891,1899,1906,1914,1921,1927,1934,1940,1946,1951,1956,1961,1966,1970,1974,1978,1982,1985,1988,1990,1993,1995,1996,1998,1999,1999,2000,2000,2000,1999,1999,1998,1996,1995,1993,1990,1988,1985,1982,1978,1974,1970,1966,1961,1956,1951,1946,1940,1934,1927,1921,1914,1906,1899,1891,1883,1875,1866,1857,1848,1839,1829,1819,1809,1799,1788,1777,1766,1755,1743,1731,1719,1707,1695,1682,1669,1656,1643,1629,1616,1602,1588,1574,1559,1545,1530,1515,1500,1485,1469,1454,1438,1423,1407,1391,1375,1358,1342,1326,1309,1292,1276,1259,1242,1225,1208,1191,1174,1156,1139,1122,1105,1087,1070,1052,1035,1017,1000,983,965,948,930,913,895,878,861,844,826,809,792,775,758,741,724,708,691,674,658,642,625,609,593,577,562,546,531,515,500,485,470,455,441,426,412,398,384,371,357,344,331,318,305,293,281,269,257,245,234,223,212,201,191,181,171,161,152,143,134,125,117,109,101,94,86,79,73,66,60,54,49,44,39,34,30,26,22,18,15,12,10,7,5,4,2,1,1,0,0,0,1,1,2,4,5,7,10,12,15,18,22,26,30,34,39,44,49,54,60,66,73,79,86,94,101,109,117,125,134,143,152,161,171,181,191,201,212,223,234,245,257,269,281,293,305,318,331,344,357,371,384,398,412,426,441,455,470,485,500,515,531,546,562,577,593,609,625,642,658,674,691,708,724,741,758,775,792,809,826,844,861,878,895,913,930,948,965,983,
-};
-uint16_t  pwmlist2[] = {
-  0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,220,230,240,250,260,270,280,290,300,310,320,330,340,350,360,370,380,390,400
-};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,6 +61,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_ADC2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -108,9 +105,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
-  set_prescalar(1000);
+  set_friqency(1000);
   start_pwm();
+
+  ADC_Enable(&hadc2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -122,7 +122,7 @@ int main(void)
 //		  HAL_Delay(100);
 //	  }
 	  HAL_Delay(1000);
-    set_prescalar(1000);
+    set_friqency(1000);
 //	  HAL_Delay(3000);
 //	  PWM_DMA_Start(&htim1,TIM_CHANNEL_1,(uint32_t*)pwmlist2, sizeof (pwmlist2) / sizeof (uint16_t));
     /* USER CODE END WHILE */
@@ -170,6 +170,65 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ADC2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC2_Init(void)
+{
+
+  /* USER CODE BEGIN ADC2_Init 0 */
+
+  /* USER CODE END ADC2_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC2_Init 1 */
+
+  /* USER CODE END ADC2_Init 1 */
+
+  /** Common config
+  */
+  hadc2.Instance = ADC2;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc2.Init.GainCompensation = 0;
+  hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc2.Init.LowPowerAutoWait = DISABLE;
+  hadc2.Init.ContinuousConvMode = DISABLE;
+  hadc2.Init.NbrOfConversion = 1;
+  hadc2.Init.DiscontinuousConvMode = DISABLE;
+  hadc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc2.Init.DMAContinuousRequests = DISABLE;
+  hadc2.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc2.Init.OversamplingMode = DISABLE;
+  if (HAL_ADC_Init(&hadc2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC2_Init 2 */
+
+  /* USER CODE END ADC2_Init 2 */
+
 }
 
 /**

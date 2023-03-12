@@ -11,7 +11,8 @@ U_point = 0
 V_point = int(wave_size/3)
 W_point = int(wave_size*2/3)
 
-max = 255 #max value
+
+max = 65535 #max value
 
 ######settings end######
 
@@ -37,7 +38,7 @@ text = """
 #ifndef __TABLE_H__
 #define __TABLE_H__
 
-
+#include "stdint.h"
 
 """
 
@@ -48,7 +49,7 @@ text +="#define V_POINT "+ str(V_point)+"\r"
 text +="#define W_POINT "+ str(W_point)+"\r"
 
 text +="""
-const uint8_t sine_table["""+str(table_size)+"""] = {\r"""
+const uint16_t sine_table["""+str(table_size)+"""] = {\r"""
 count = 0
 for i in range(table_size):
     count += 1

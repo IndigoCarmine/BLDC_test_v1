@@ -1,8 +1,7 @@
+#pragma once
+
 #include "table.h"
 #include "dma.h"
-
-#ifndef __3PHASE_PWM_H__
-#define __3PHASE_PWM_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,6 +20,4 @@ void set_friqency(int freq);
 
 #ifdef __cplusplus
 }   
-#endif
-
 #endif

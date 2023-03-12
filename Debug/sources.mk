@@ -33,4 +33,5 @@ CPP_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
+Drivers/STM32G4xx_HAL_Driver/Src \
 
