@@ -54,15 +54,17 @@ void unsafe_update_table(float scaler, uint8_t* table,TIM_HandleTypeDef* htim,ui
 
 //scaler is a value between 0 and 1.
 //direction is 0 or 1, 0 is normal, 1 is reverse
-void update_table(uint8_t scaler,uint8_t direction,TIM_HandleTypeDef &htim)
+void update_table(float scaler,uint8_t direction,TIM_HandleTypeDef &htim)
 {
+    //map scaler to 0-255
+    uint8_t uscaler= (uint8_t)(scaler * 255);
     if(using_A_table){
         //table A is being used, so update table B
-        unsafe_update_table(scaler, B_table, &htim,direction);
+        unsafe_update_table(uscaler, B_table, &htim,direction);
         using_A_table = 0;
     }else{
         //table B is being used, so update table A
-        unsafe_update_table(scaler, A_table, &htim,direction);
+        unsafe_update_table(uscaler, A_table, &htim,direction);
         using_A_table = 1;
     }
 }
