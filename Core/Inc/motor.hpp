@@ -9,35 +9,14 @@
 #include "3phase_pwm.hpp"
 #include "current_feedback.hpp"
 #include "park_transform.hpp"
+#include "can_interface.hpp"
+using namespace can;
 
 #include <math.h>
 #include <functional>
 
 namespace three_phase_motor
 {
-
-    enum class MotorState : uint8_t
-    {
-        Free,
-        Hold,
-        Homing,
-        PositionControl,
-        PositionEquivalentControl,
-        VelocityControl,
-        CurrentControl
-    };
-
-    enum class CallbackState : uint8_t
-    {
-        TouchLimitSwitch,
-        FinishedHoming,
-        ExcessPositionLimitation,
-        MotorIsNotConnected,
-        InvalidParameter,
-        UnknownError,
-        NotImplimented,
-        Debug
-    };
 
     // It is mutable info of motor.
     struct MotorSettings

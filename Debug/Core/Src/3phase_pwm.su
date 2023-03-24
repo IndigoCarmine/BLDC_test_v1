@@ -1,0 +1,5 @@
+../Core/Src/3phase_pwm.cpp:12:6:void start_pwm(TIM_HandleTypeDef&)	16	static
+../Core/Src/3phase_pwm.cpp:23:6:void stop_pwm(TIM_HandleTypeDef&)	16	static
+../Core/Src/3phase_pwm.cpp:36:6:void unsafe_update_table(float, uint8_t*, TIM_HandleTypeDef*, uint8_t)	40	static
+../Core/Src/3phase_pwm.cpp:57:6:void update_table(float, uint8_t, TIM_HandleTypeDef&)	32	static
+../Core/Src/3phase_pwm.cpp:72:6:void set_friqency(int, TIM_HandleTypeDef&)	16	static
